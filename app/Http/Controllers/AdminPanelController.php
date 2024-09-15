@@ -21,7 +21,7 @@ class AdminPanelController extends Controller
     public function show_users()
     {
 
-        $users = User::query()->latest()->paginate(3);
+        $users = User::query()->latest()->paginate(25);
         return view('adm.show_users', ['users'=>$users]);
     }
 
