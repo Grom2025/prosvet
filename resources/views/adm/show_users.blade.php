@@ -1,7 +1,8 @@
 <x-layout>
     <style>
         table tr td{
-            style:"border: 1px solid rgba(0,0,0,0.68); border-spacing: 0; "
+            border: 1px solid rgba(79, 78, 78, 0.68);
+            border-spacing: 0;
         }
     </style>
     <div class="container-fluid py-1">
@@ -36,12 +37,13 @@
             @if(Auth::user()->isAdmin())
                 <div class="row">
                     <div class="row">
-                        <table >
+                        <table>
                             <tr>
                                 <td style="text-align: center">id</td>
                                 <td style="text-align: center">Имя</td>
                                 <td style="text-align: center">Мэил</td>
                                 <td style="text-align: center">Телефон</td>
+                                <td></td>
                                 <td></td>
                             </tr>
                             @foreach($users as $user)
@@ -59,7 +61,10 @@
                                         {{$user->tel}}
                                     </td>
                                     <td>
-                                        <a href="{{url('/')}}/adm/">
+                                        {{$user->role}}
+                                    </td>
+                                    <td>
+                                        <a href="{{url('/')}}/adm/edit_user">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                  fill="currentColor" class="bi bi-pencil-square"
                                                  viewBox="0 0 16 16">

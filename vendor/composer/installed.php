@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'laravel/laravel',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '82bc8bc04d87ad2c281c247317bbebdbe2becd25',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -39,6 +39,15 @@
             'replaced' => array(
                 0 => '*',
             ),
+        ),
+        'defstudio/telegraph' => array(
+            'pretty_version' => 'v1.53.0',
+            'version' => '1.53.0.0',
+            'reference' => '13efdf3c0b64d33bc414ff3bb5e981d768a08a40',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../defstudio/telegraph',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'dflydev/dot-access-data' => array(
             'pretty_version' => 'v3.0.3',
@@ -407,9 +416,9 @@
             'dev_requirement' => false,
         ),
         'laravel/laravel' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '82bc8bc04d87ad2c281c247317bbebdbe2becd25',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -995,6 +1004,15 @@
             'reference' => '024752cba691fee3cd1800000b6aa3da3b8b2474',
             'type' => 'library',
             'install_path' => __DIR__ . '/../spatie/laravel-image-optimizer',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'spatie/laravel-package-tools' => array(
+            'pretty_version' => '1.16.5',
+            'version' => '1.16.5.0',
+            'reference' => 'c7413972cf22ffdff97b68499c22baa04eddb6a2',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../spatie/laravel-package-tools',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

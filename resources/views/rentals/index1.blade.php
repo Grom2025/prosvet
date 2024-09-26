@@ -87,7 +87,11 @@
                 flyingDiv.style.display = 'none';
             }
 
-            if (flyingDiv.style.display == 'block') setTimeout('flyToBasket("' + productId + '")', 10); else ajaxAddProduct(productId);
+            if (flyingDiv.style.display == 'block'&&currentYPos>0) {
+                setTimeout('flyToBasket("' + productId + '")', 10);
+            } else {
+                ajaxAddProduct(productId);
+            }
         }
 
         function showAjaxBasketContent(ajaxIndex) {
@@ -133,10 +137,10 @@
         function updateTotalPrice() {
             var itemBox = document.getElementById('shopping_cart_items');
             var totalPrice = 0;
-            var i=0;
+            var i = 0;
             if (document.getElementById('shopping_cart_totalprice')) {
                 for (var no = 1; no < itemBox.rows.length; no++) {
-                    i=i+Number(itemBox.rows[no].cells[0].innerHTML);
+                    i = i + Number(itemBox.rows[no].cells[0].innerHTML);
                     totalPrice = totalPrice
                         + (itemBox.rows[no].cells[0].innerHTML.replace(/[^0-9]/g)
                             * itemBox.rows[no].cells[2].innerHTML);
@@ -144,9 +148,9 @@
                 document.getElementById('shopping_cart_totalprice').innerHTML = txt_totalPrice + totalPrice.toFixed(2);
 
             }
-            if(i>0){
-                $('#card').css('display','flex');
-                $('#cart_num').html(''+i)
+            if (i > 0) {
+                $('#card').css('display', 'flex');
+                $('#cart_num').html('' + i)
             }
 
         }
@@ -172,6 +176,7 @@
             $.ajax({
                 url: "{{url('/')}}/basket/remove_from_basket",
                 type: "POST",
+                enctype: 'multipart/form-data',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "token": "{{ Cookie::get('otkn') }}",
@@ -192,6 +197,7 @@
             $.ajax({
                 url: "{{url('/')}}/basket/add_to_basket",
                 type: "POST",
+                enctype: 'multipart/form-data',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "token": "{{ Cookie::get('otkn') }}",
@@ -219,6 +225,7 @@
             $.ajax({
                 url: "{{url('/')}}/basket/get_basket",
                 type: "POST",
+                enctype: 'multipart/form-data',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "token": "{{ Cookie::get('otkn') }}",
@@ -234,14 +241,14 @@
             });
         }
 
-        function Basket(){
-            window.location.href='{{url('/basket')}}';
+        function Basket() {
+            window.location.href = '{{url('/basket')}}';
         }
 
         $(document).ready(function () {
 
             // console.log( "ready!" );
-            $('#card').css('display','none');
+            $('#card').css('display', 'none');
             $('#card').hide();
             ajaxGetProducts();
         });
@@ -252,7 +259,8 @@
         .container tr {
             border-bottom: rgba(243, 158, 21, 0.87) 1px solid;
         }
-        .input-group>.input-group-append>.btn, .input-group>.input-group-append>.input-group-text, .input-group>.input-group-prepend:first-child>.btn:not(:first-child), .input-group>.input-group-prepend:first-child>.input-group-text:not(:first-child), .input-group>.input-group-prepend:not(:first-child)>.btn, .input-group>.input-group-prepend:not(:first-child)>.input-group-text {
+
+        .input-group > .input-group-append > .btn, .input-group > .input-group-append > .input-group-text, .input-group > .input-group-prepend:first-child > .btn:not(:first-child), .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child), .input-group > .input-group-prepend:not(:first-child) > .btn, .input-group > .input-group-prepend:not(:first-child) > .input-group-text {
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
         }
@@ -304,9 +312,13 @@
                 <h2>Рентал</h2>
             </div>
             <button class="mcart" id="cart" onclick="Basket()">
-                <div class="cart__image"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart3" viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
-                    </svg></div>
+                <div class="cart__image">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                         class="bi bi-cart3" viewBox="0 0 16 16">
+                        <path
+                            d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                    </svg>
+                </div>
                 <div class="cart__num" id="cart_num">0</div>
             </button>
 
@@ -368,7 +380,8 @@
                     <img class="img-thumbnail" src="{{url('/').'/storage/'.$path}}" width="250px" height="auto">
                 </div>
                 <div class="col-md-7" id="slidingProduct{{$r->id}}">
-                    <p class="fw-normal lh-1"><a href="{{url('/').'/rental_view/'.$r->id}}" class="btn btn-close-white"> {{$r->name}}</a></p>
+                    <p class="fw-normal lh-1"><a href="{{url('/').'/rental_view/'.$r->id}}"
+                                                 class="btn btn-close-white"> {{$r->name}}</a></p>
                     <p class="small">{{$r->fexp}}</p>
                     <p class="text-end">{{$r->price.' p.'}}</p>
                 </div>
