@@ -304,6 +304,9 @@
             top: -5px;
             right: -5px;
         }
+
+
+
     </style>
 
     <div class="container">
@@ -346,7 +349,7 @@
     </div>
     <div class="container">
         <div class="row text-end mb-3">
-            <a href="{{url('/basket')}}" class="btn btn-close-white">Перейти в корзину</a>
+
             <br>
         </div>
     </div>

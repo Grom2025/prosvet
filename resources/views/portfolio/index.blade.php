@@ -9,7 +9,7 @@
         <meta name="twitter:url" content="https://pravdaprosvet.ru/portfolio" />
         <meta name="twitter:domain" content="pravdaprosvet.ru" />
 
-        <meta name="twitter:description" content="Автор: Пкщь" />
+        <meta name="twitter:description" content="" />
 
         <meta name="twitter:image" content="{{url('/').'/img/shop.jpg'}}" />
 

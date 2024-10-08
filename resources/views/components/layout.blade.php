@@ -8,7 +8,7 @@
     <meta name="generator" content="">
     <meta name="yandex-verification" content="a97a41fb27d00c84" />
 
-    <title>{{'ProSvet '}}
+    <title>{{'ProSvet '.($my_title??'')}}
         @if(env('APP_DEBUG', false)) DEBUG @endif
     </title>
 
@@ -39,7 +39,7 @@
             font-style: normal;
             font-weight: 400;
             /* Браузер сначала попробует найти шрифт локально */
-            src: local("Roboto"),
+            src: local("IgraSans"),
                 /* Если не получилось, загрузит woff2 */
             url("{{url('/')}}/fonts/IgraSans.woff2") format("woff2"),
                 /* Если браузер не поддерживает woff2, загрузит woff */
@@ -51,7 +51,7 @@
             font-style: normal;
             font-weight: 400;
             /* Браузер сначала попробует найти шрифт локально */
-            src: local("Roboto"),
+            src: local("Advent Pro"),
                 /* Если не получилось, загрузит woff2 */
             url("{{url('/')}}/fonts/AdventPro_Expanded-Bold.woff2") format("woff2"),
                 /* Если браузер не поддерживает woff2, загрузит woff */
@@ -62,7 +62,7 @@
             font-style: normal;
             font-weight: 400;
             /* Браузер сначала попробует найти шрифт локально */
-            src: local("Roboto"),
+            src: local("Lato"),
                 /* Если не получилось, загрузит woff2 */
             url("{{url('/')}}/fonts/Lato-Black.woff2") format("woff2"),
                 /* Если браузер не поддерживает woff2, загрузит woff */
@@ -233,14 +233,16 @@
                             <ul class="dropdown-menu dropdown-menu-dark px-3">
                                 <li><a class="dropdown-item active" href="{{ url('/') }}">Главная</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/portfolio' }}">Портфолио</a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item " href="{{ url('/').'/rental' }}">Оборудование</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item " href="{{ url('/').'/shop' }}">Магазин</a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/posts' }}">Блог</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/rooles' }}">Правила</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/contact' }}">Забронировать</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/contacts' }}">Контакты</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+                                <li><hr class="dropdown-divider"></li>
                                 @guest
                                     @if (Route::has('login'))
                                         <li class="nav-item">

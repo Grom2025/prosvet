@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/adm', [AdminPanelController::class, 'index']);
+Route::get('/adm/send_msg', [AdminPanelController::class, 'send_msg']);
 Route::get('/adm/show_users', [AdminPanelController::class, 'show_users']);
 Route::get('/adm/create_post', [AdminPanelController::class, 'create']);
 Route::get('/adm/edit_post/{id}', [AdminPanelController::class, 'edit']);

@@ -236,6 +236,7 @@
 
     </script>
 
+
     <style>
         .container tr {
             border-bottom: rgba(243, 158, 21, 0.87) 1px solid;
@@ -243,6 +244,72 @@
         .input-group>.input-group-append>.btn, .input-group>.input-group-append>.input-group-text, .input-group>.input-group-prepend:first-child>.btn:not(:first-child), .input-group>.input-group-prepend:first-child>.input-group-text:not(:first-child), .input-group>.input-group-prepend:not(:first-child)>.btn, .input-group>.input-group-prepend:not(:first-child)>.input-group-text {
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
+        }
+        gb {
+
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 50vh;
+            margin: 0;
+            background: #ECEFFC;
+        }
+        .carousel {
+            position: relative;
+            display: flex;
+        }
+        .carousel .slides {
+            position: relative;
+            top: -4em;
+            left: 3em;
+        }
+        .carousel .slides img {
+            top:6em;
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            opacity: 0;
+            z-index: 10;
+        }
+        .carousel .slides img.active {
+            opacity: 1;
+        }
+        .carousel .overlays {
+            position: relative;
+            width: 15em;
+            height: 11em;
+        }
+        .carousel .overlays .bar {
+            position: absolute;
+            top: 100;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: left;
+        }
+        .carousel .nav-links {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            margin: 0;
+            padding: 0 0 0 6em;
+            list-style-type: none;
+        }
+        .carousel .nav-links .nav-link {
+            font-size: 2rem;
+            font-family: Lora, serif;
+            line-height: 2;
+            text-decoration: none;
+            color: #7f8c8d;
+            transition: 0.3s;
+        }
+        .carousel .nav-links .nav-link:hover {
+            color: #1c1e1f;
+        }
+        .carousel .nav-links .nav-link.active {
+            color: #646262;
+            pointer-events: none;
         }
     </style>
 
@@ -283,26 +350,27 @@
         </div>
 
         <div class="row">
-            <div class="col-md-3">
-                @php
-                    $pic = $rental->pictures()->get();
-                    $i=0;
-                    foreach($pic as $pi){
-                        echo "<div class='row'>";
-                        echo "<img class='rounded mx-auto d-block' src=\"/storage/";
-                        echo $pi->url;
-                        if($i==0)
-                            echo  "\" width='512px' height='auto'>";
-                        else
-                            echo  "\" width='200px' height='auto'>";
-                        echo "</div>";
-                        $i++;
-                    }
-
-                @endphp
+            <div class="col-md-5 gb">
+                <div class="carousel">
+                    <div class="slides">
+                        @foreach($rental->pictures()->get() as $pi)
+                            <img src="{{'/storage/'.$pi->url}}" width="300px"/>
+                        @endforeach
+                    </div>
+                    <div class="overlays">
+                        @foreach($rental->pictures()->get() as $pi)
+                            <div class="bar" style=""></div>
+                        @endforeach
+                    </div>
+                    <ul class="nav-links">
+                        @foreach($rental->pictures()->get() as $pi)
+                            <li><a href="#" class="nav-link"><img src="{{'/storage/'.$pi->url}}" width="100px"/></a></li>
+                        @endforeach
+                    </ul>
+                </div>
 
             </div>
-            <div class="col-md-7" id="slidingProduct{{$rental->id}}">
+            <div class="col-md-5" id="slidingProduct{{$rental->id}}">
                 <h2 class="fw-normal lh-1">{{$rental->name}}</h2>
                 <p class="lead">{{$rental->fexp}}</p>
                 <h3 class="text-end">{{$rental->price.' p.'}}</h3>
@@ -335,4 +403,64 @@
 
 
     </div>
+
+    <script>
+
+        let navLinks = document.querySelectorAll(".carousel .nav-link");
+        let slides = document.querySelectorAll(".carousel .slides img");
+        let overlays = document.querySelectorAll(".carousel .bar");
+        let maxZIndex = navLinks.length;
+        let easeInOutQuart = "cubic-bezier(0.77, 0, 0.175, 1)";
+        slides[0].classList.add("active");
+        navLinks[0].classList.add("active");
+        navLinks.forEach((navLink, activeIndex) => {
+            overlays[activeIndex].style.zIndex = `${navLinks.length - activeIndex}`;
+            navLink.addEventListener("click", () => {
+                // nav-link
+                navLinks.forEach(navLink => navLink.classList.remove("active"));
+                navLink.classList.add("active");
+                // slide
+                let currentSlide = document.querySelector(".carousel .slides img.active");
+                let slideFadeOut = currentSlide.animate(
+                    [
+                        { transform: "translateX(0)", opacity: 1 },
+                        { transform: "translateX(5%)", opacity: 0 }
+                    ],
+                    {
+                        duration: 300,
+                        easing: "ease-in",
+                        fill: "forwards"
+                    }
+                );
+                slideFadeOut.onfinish = () => {
+                    slides.forEach(slide => slide.classList.remove("active"));
+                    let activeSlide = slides[activeIndex];
+                    activeSlide.classList.add("active");
+                    activeSlide.animate(
+                        [
+                            {
+                                transform: "translateX(-5%)",
+                                opacity: 0
+                            },
+                            {
+                                transform: "translateX(0)",
+                                opacity: 1
+                            }
+                        ],
+                        { duration: 300, easing: "ease-out", fill: "forwards" }
+                    );
+                };
+                // overlay
+                maxZIndex += 1;
+                let activeOverlay = overlays[activeIndex];
+                activeOverlay.style.zIndex = `${maxZIndex}`;
+                activeOverlay.animate(
+                    [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }],
+                    { duration: 1200, fill: "forwards", easing: easeInOutQuart }
+                );
+            });
+        });
+
+
+    </script>
 </x-layout>

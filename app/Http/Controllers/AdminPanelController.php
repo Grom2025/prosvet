@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use App\Traits\Upload;
+use DefStudio\Telegraph\Facades\Telegraph;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use DefStudio\Telegraph\Models\TelegraphChat;
 
 class AdminPanelController extends Controller
 {
@@ -23,6 +25,16 @@ class AdminPanelController extends Controller
 
         $users = User::query()->latest()->paginate(25);
         return view('adm.show_users', ['users'=>$users]);
+    }
+
+    public function send_msg(){
+        /** @var TelegraphChat $chat */
+        $chat = TelegraphChat::find();
+        $chat->html("<strong>Hello!</strong>\n\nI'm here!")->send();
+        Telegraph::botInfo()->send();
+        //Telegraph::chatAction(ChatActions::TYPING)->send();
+
+
     }
 
     public function create()

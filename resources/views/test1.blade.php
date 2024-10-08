@@ -259,14 +259,16 @@
                             <ul class="dropdown-menu dropdown-menu-dark px-3">
                                 <li><a class="dropdown-item active" href="{{ url('/') }}">Главная</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/portfolio' }}">Портфолио</a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item " href="{{ url('/').'/rental' }}">Оборудование</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item " href="{{ url('/').'/shop' }}">Магазин</a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/posts' }}">Блог</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/rooles' }}">Правила</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/contact' }}">Забронировать</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/').'/contacts' }}">Контакты</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+                                <li><hr class="dropdown-divider"></li>
                                 @guest
                                     @if (Route::has('login'))
                                         <li class="nav-item">
@@ -621,7 +623,7 @@
                     <a href="{{url('/portfolio')}}">
                     <div class="card card-01 height-fix">
                         <img class="card-img-top"
-                             src="{{url('/img/cicle/1.jpg')}}"
+                             src="{{url('/img/cicle/2.jpg')}}"
                              alt="Card image cap">
                         <div class="card-img-overlay">
                             <h4 class="card-title"><strong style="color: #f39e15;">Циклорама</strong></h4>
@@ -649,7 +651,7 @@
                     <a href="{{url('/rental')}}">
                     <div class="card card-01 height-fix">
                         <img class="card-img-top"
-                             src="{{url('/img/cicle/2.jpg')}}"
+                             src="{{url('/img/cicle/1.jpg')}}"
                              alt="Card image cap">
                         <div class="card-img-overlay">
                             <h4 class="card-title"><strong style="color: #f39e15;">Оснащение</strong></h4>

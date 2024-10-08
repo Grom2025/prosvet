@@ -87,7 +87,11 @@
                 flyingDiv.style.display = 'none';
             }
 
-            if (flyingDiv.style.display == 'block') setTimeout('flyToBasket("' + productId + '")', 10); else ajaxAddProduct(productId);
+            if (flyingDiv.style.display == 'block'&&currentYPos>0) {
+                setTimeout('flyToBasket("' + productId + '")', 10);
+            } else {
+                ajaxAddProduct(productId);
+            }
         }
 
         function showAjaxBasketContent(ajaxIndex) {
@@ -329,7 +333,7 @@
     </div>
     <div class="container">
         <div class="row text-end mb-3">
-            <a href="{{url('/basket_shop')}}" class="btn">Перейти в корзину</a>
+
             <br>
         </div>
     </div>
