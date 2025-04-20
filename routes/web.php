@@ -80,7 +80,7 @@ Route::post('/contact1', [cicleDateController::class, 'store']);
 Route::post('/returnDates', [cicleDateController::class, 'return_dates']);
 
 Route::get('/', function (){return view('test1');});
-Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts', [PostController::class, 'test1']);
 Route::get('/contacts', function (){return view('contacts.index');});
 Route::get('/rooles', function (){return view('rooles.index');});
 Route::get('/portfolio', function (){return view('portfolio.index');});

@@ -12,6 +12,7 @@ use DefStudio\Telegraph\DTO\CallbackQuery;
 use DefStudio\Telegraph\DTO\Chat;
 use DefStudio\Telegraph\DTO\InlineQuery;
 use DefStudio\Telegraph\DTO\Message;
+use DefStudio\Telegraph\DTO\Reaction;
 use DefStudio\Telegraph\DTO\User;
 use DefStudio\Telegraph\Exceptions\TelegramWebhookException;
 use DefStudio\Telegraph\Keyboard\Keyboard;
@@ -37,10 +38,11 @@ abstract class WebhookHandler
 
     protected Request $request;
     protected Message|null $message = null;
+    protected Reaction|null $reaction = null;
     protected CallbackQuery|null $callbackQuery = null;
 
     /**
-     * @var Collection<string, string>
+     * @var Collection<string, string>|Collection<int, array<string, string>>
      */
     protected Collection $data;
 
@@ -131,6 +133,18 @@ abstract class WebhookHandler
         $this->handleChatMessage($text);
     }
 
+    protected function handleReaction(): void
+    {
+        $this->extractReactionData();
+
+        if (config('telegraph.debug_mode', config('telegraph.webhook.debug'))) {
+            Log::debug('Telegraph webhook message', $this->data->toArray());
+        }
+
+        /** @phpstan-ignore-next-line */
+        $this->handleChatReaction($this->reaction->newReaction(), $this->reaction->oldReaction());
+    }
+
     protected function canHandle(string $action): bool
     {
         if ($action === 'handle') {
@@ -178,6 +192,17 @@ abstract class WebhookHandler
         ]);
     }
 
+    protected function extractReactionData(): void
+    {
+        $this->setupChat();
+
+        assert($this->reaction !== null);
+
+        $this->messageId = $this->reaction->id();
+
+        $this->data = collect($this->reaction->newReaction());
+    }
+
     protected function handleChatMemberJoined(User $member): void
     {
         // .. do nothing
@@ -189,6 +214,17 @@ abstract class WebhookHandler
     }
 
     protected function handleChatMessage(Stringable $text): void
+    {
+        // .. do nothing
+    }
+
+    /**
+     * @param Collection<array-key, Reaction> $newReactions
+     * @param Collection<array-key, Reaction> $oldReactions
+     *
+     * @return void
+     */
+    protected function handleChatReaction(Collection $newReactions, Collection $oldReactions): void
     {
         // .. do nothing
     }
@@ -250,6 +286,14 @@ abstract class WebhookHandler
                 return;
             }
 
+            if ($this->request->has('message_reaction')) {
+                /* @phpstan-ignore-next-line */
+                $this->reaction = Reaction::fromArray($this->request->input('message_reaction'));
+                $this->handleReaction();
+
+                return;
+            }
+
 
             if ($this->request->has('callback_query')) {
                 /* @phpstan-ignore-next-line */
@@ -275,6 +319,8 @@ abstract class WebhookHandler
     {
         if (isset($this->message)) {
             $telegramChat = $this->message->chat();
+        } elseif (isset($this->reaction)) {
+            $telegramChat = $this->reaction->chat();
         } else {
             $telegramChat = $this->callbackQuery?->message()?->chat();
         }
@@ -293,10 +339,7 @@ abstract class WebhookHandler
             }
 
             if (config('telegraph.security.store_unknown_chats_in_db', false)) {
-                $this->chat->name = Str::of("")
-                    ->append("[", $telegramChat->type(), ']')
-                    ->append(" ", $telegramChat->title());
-                $this->chat->save();
+                $this->createChat($telegramChat, $this->chat);
             }
         }
     }
@@ -304,7 +347,8 @@ abstract class WebhookHandler
     protected function allowUnknownChat(): bool
     {
         return (bool) match (true) {
-            $this->message !== null => config('telegraph.security.allow_messages_from_unknown_chats', false),
+            $this->message !== null,
+            $this->reaction !== null => config('telegraph.security.allow_messages_from_unknown_chats', false),
             $this->callbackQuery != null => config('telegraph.security.allow_callback_queries_from_unknown_chats', false),
             default => false,
         };
@@ -326,14 +370,18 @@ abstract class WebhookHandler
      */
     protected function parseCommand(Stringable $text): array
     {
-        $command = (string) $text->before('@')->before(' ');
-        $parameter = (string) $text->after('@')->after(' ');
+        $command = $text->before('@')->before(' ');
 
-        $this->commandPrefixes()->each(function (string $value) use (&$command) {
-            $command = str($command)->after($value)->toString();
-        });
+        foreach ($this->commandPrefixes() as $prefix) {
+            if ($command->startsWith($prefix)) {
+                $parameter = $text->after($command)->after('@')->after(' ');
+                $command = $command->after($prefix);
 
-        return [$command, $parameter];
+                break;
+            }
+        }
+
+        return [(string) $command, (string) ($parameter ?? '')];
     }
 
     /**
@@ -348,5 +396,18 @@ abstract class WebhookHandler
             ->push('/')
             ->map(fn (string $prefix) => str($prefix)->trim()->toString())
             ->unique();
+    }
+
+    protected function createChat(Chat $telegramChat, TelegraphChat $chat): void
+    {
+        $chat->name = $this->getChatName($telegramChat);
+        $chat->save();
+    }
+
+    protected function getChatName(Chat $chat): string
+    {
+        return Str::of("")
+            ->append("[", $chat->type(), ']')
+            ->append(" ", $chat->title());
     }
 }

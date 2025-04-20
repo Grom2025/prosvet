@@ -91,7 +91,7 @@ class RentalBasketController extends Controller
         ];
 
         if(!env('APP_DEBUG', false)) {
-            Mail::to('info@prosvet.studio')->send(new HelloMail($mailData2));
+            Mail::to('pravdaprosvet@yandex.ru')->send(new HelloMail($mailData2));
         }
 
         Mail::to($user->email)->send(new HelloMail($mailData));

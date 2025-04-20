@@ -138,7 +138,15 @@ class Grammar extends BaseGrammar
             $column = 'distinct '.$column;
         }
 
-        return 'select '.$aggregate['function'].'('.$column.') as aggregate';
+        $sql = 'select ';
+
+        if ($query->groups) {
+            $sql .= $this->columnize($query->groups).', ';
+        }
+
+        $sql .= $aggregate['function'].'('.$column.') as aggregate';
+
+        return $sql;
     }
 
     /**
@@ -1130,10 +1138,12 @@ class Grammar extends BaseGrammar
     protected function compileUnionAggregate(Builder $query)
     {
         $sql = $this->compileAggregate($query, $query->aggregate);
+        $groups = $query->groups ? ' '.$this->compileGroups($query, $query->groups) : '';
 
         $query->aggregate = null;
+        $query->groups = null;
 
-        return $sql.' from ('.$this->compileSelect($query).') as '.$this->wrapTable('temp_table');
+        return $sql.' from ('.$this->compileSelect($query).') as '.$this->wrapTable('temp_table').$groups;
     }
 
     /**
@@ -1526,7 +1536,7 @@ class Grammar extends BaseGrammar
      */
     public function substituteBindingsIntoRawSql($sql, $bindings)
     {
-        $bindings = array_map(fn ($value) => $this->escape($value), $bindings);
+        $bindings = array_map(fn ($value) => $this->escape($value, is_resource($value) || gettype($value) === 'resource (closed)'), $bindings);
 
         $query = '';
 

@@ -134,7 +134,7 @@ class cicleDateController extends Controller
             'body' => 'Клиент ' . $request->name . ' tel: ' . $request->mobile_number . ' e-mail ' . $request->email . ' на ' . $request->fdate . ' число с ' . $request->nach . ' по ' . $request->con . ' часов.'
         ];
         if(!env('APP_DEBUG', false)){
-            Mail::to('info@prosvet.studio')->send(new HelloMail($mailData2));
+            Mail::to('pravdaprosvet@yandex.ru')->send(new HelloMail($mailData2));
         }
 
 
